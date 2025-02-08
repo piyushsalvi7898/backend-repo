@@ -15,6 +15,8 @@ app.use(express.json()); // Parse JSON bodies
 
 app.use('/api/contacts', contactRoutes); // Use your contact routes
 
+
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

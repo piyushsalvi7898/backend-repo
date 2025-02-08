@@ -17,13 +17,13 @@ router.post('/', async (req, res) => {
 
 router.delete('/delete/:id', async (req, res) => {
     console.log(req.params.id);
-    try{
+    try {
         const _id = req.params.id;
         const contact = await Contact.findByIdAndDelete(_id),
-        data =
-        
-        { id: _id };
-        if(!contact){
+            data =
+
+                { id: _id };
+        if (!contact) {
             res.status(404).send({ message: "Contact not found" });
         }
     } catch (error) {
