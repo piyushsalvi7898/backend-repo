@@ -9,8 +9,7 @@ const PORT = process.env.PORT || 8000;
 
 // Connect to MongoDB
 connectDB();
-
-app.use(cors()); // Enable CORS
+app.use(cors({ origin: "*" }));
 app.use(express.json()); // Parse JSON bodies
 
 app.use('/api/contacts', contactRoutes); // Use your contact routes
