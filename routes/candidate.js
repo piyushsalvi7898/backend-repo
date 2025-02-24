@@ -1,20 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const Candidate = require('../models/candidateModel');
+const Candidate = require("../models/candidateModel");
 
-
-
-// POST: Save Candidate Registration Data
+// ✅ POST: Save Candidate Registration Data
 router.post("/", async (req, res) => {
   try {
     console.log("Received candidate data:", req.body);
 
-    // Check if required fields are present
     if (!req.body.name || !req.body.mobile || !req.body.email) {
       return res.status(400).json({ message: "Name, Mobile, and Email are required!" });
     }
 
-    // Check for duplicate uniqueId
     const existingCandidate = await Candidate.findOne({ uniqueId: req.body.uniqueId });
     if (existingCandidate) {
       return res.status(400).json({ message: "Candidate with this unique ID already exists!" });
@@ -30,7 +26,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET: Generate Unique Candidate ID
+// ✅ GET: Generate Unique Candidate ID
 router.get("/uniqueId", async (req, res) => {
   try {
     console.log("Generating unique ID...");
@@ -41,15 +37,13 @@ router.get("/uniqueId", async (req, res) => {
 
     if (lastCandidate && lastCandidate.uniqueId) {
       const idParts = lastCandidate.uniqueId.split("-");
-
       if (idParts.length === 2 && !isNaN(idParts[1])) {
-        lastId = parseInt(idParts[1]); // Convert ID to number
+        lastId = parseInt(idParts[1]);
       }
     }
 
     const newId = `Yunify-${lastId + 1}`;
     console.log("Generated unique ID:", newId);
-
     res.json({ uniqueId: newId });
 
   } catch (error) {

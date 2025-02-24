@@ -12,7 +12,7 @@ const CandidateSchema = new mongoose.Schema({
   alternateNumber: String,
   email: { type: String, required: true, unique: true },
   upiTransactionId: String,
-  uniqueId: { type: String, required: true, unique: true } // ✅ Added required & unique constraints
+  uniqueId: { type: String, required: true, unique: true } // ✅ Required & unique
 });
 
 module.exports = mongoose.model("Candidate", CandidateSchema);
