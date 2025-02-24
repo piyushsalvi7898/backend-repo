@@ -22,8 +22,6 @@ app.use("/api/candidates", candidateRoutes); //  Candidate Registration API
 
 
 
-
-
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
