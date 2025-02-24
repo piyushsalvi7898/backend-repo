@@ -16,20 +16,19 @@ router.post('/', async (req, res) => {
 });
 
 router.delete('/delete/:id', async (req, res) => {
-    console.log(req.params.id);
     try {
         const _id = req.params.id;
-        const contact = await Contact.findByIdAndDelete(_id),
-            data =
-
-                { id: _id };
-        if (!contact) {
-            res.status(404).send({ message: "Contact not found" });
-        }
+        await User.findByIdAndDelete(_id);
+        res.json({
+            message: 'User deleted successfully',
+            data: { id: _id }
+        });
     } catch (error) {
-        res.status(500).send({ message: "Error deleting contact", error: error.message });
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Error deleting user' });
     }
 });
+module.exports = router;
 
 
 // Get all contacts
