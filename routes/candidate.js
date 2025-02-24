@@ -1,54 +1,48 @@
 const express = require("express");
 const router = express.Router();
-const Candidate = require("../models/candidateModel");
+const Candidate = require("../models/Candidate");
 
-// ✅ POST: Save Candidate Registration Data
+// Create Candidate (POST)
 router.post("/", async (req, res) => {
   try {
-    console.log("Received candidate data:", req.body);
-
-    if (!req.body.name || !req.body.mobile || !req.body.email) {
-      return res.status(400).json({ message: "Name, Mobile, and Email are required!" });
-    }
-
-    const existingCandidate = await Candidate.findOne({ uniqueId: req.body.uniqueId });
-    if (existingCandidate) {
-      return res.status(400).json({ message: "Candidate with this unique ID already exists!" });
-    }
-
     const newCandidate = new Candidate(req.body);
     await newCandidate.save();
-    res.status(201).json({ message: "Candidate registered successfully!", data: newCandidate });
-
+    res.status(201).json({ message: "Candidate registered successfully!" });
   } catch (error) {
-    console.error("Error saving candidate:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(400).json({ error: error.message });
   }
 });
 
-// ✅ GET: Generate Unique Candidate ID
-router.get("/uniqueId", async (req, res) => {
+// Get All Candidates (GET)
+router.get("/", async (req, res) => {
   try {
-    console.log("Generating unique ID...");
-
-    const lastCandidate = await Candidate.findOne().sort({ _id: -1 });
-
-    let lastId = 10000; // Default starting ID
-
-    if (lastCandidate && lastCandidate.uniqueId) {
-      const idParts = lastCandidate.uniqueId.split("-");
-      if (idParts.length === 2 && !isNaN(idParts[1])) {
-        lastId = parseInt(idParts[1]);
-      }
-    }
-
-    const newId = `Yunify-${lastId + 1}`;
-    console.log("Generated unique ID:", newId);
-    res.json({ uniqueId: newId });
-
+    const candidates = await Candidate.find();
+    res.status(200).json(candidates);
   } catch (error) {
-    console.error("Error generating unique ID:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get Candidate by ID (GET)
+router.get("/:id", async (req, res) => {
+  try {
+    const candidate = await Candidate.findById(req.params.id);
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+    res.status(200).json(candidate);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete Candidate (DELETE)
+router.delete("/:id", async (req, res) => {
+  try {
+    await Candidate.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Candidate deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
