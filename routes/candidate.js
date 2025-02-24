@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Candidate = require("../models/candidateModel");
+const Candidate = require('../models/candidateModel');
+
+
 
 // POST: Save Candidate Registration Data
 router.post("/", async (req, res) => {
