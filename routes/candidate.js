@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
 // GET: Generate Unique Candidate ID
 router.get("/uniqueId", async     (req, res) => {
     try {
-      const lastCandidate = await Candidate.findOne().sort({ _id: -1 }); // Get the last entered candidate
+      const lastCandidate = await Candidate.findOne().sort(   { _id: -1 }); // Get the last entered candidate
       
       let lastId = 10000; // Default starting ID
       

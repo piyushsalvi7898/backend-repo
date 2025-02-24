@@ -17,8 +17,12 @@ app.use(cors({ origin: "*" }));
 app.use(express.json()); // Parse JSON bodies
 
 // Routes
-app.use("/api/contacts", contactRoutes); // ✅ Contact API
-app.use("/api/candidates", candidateRoutes); // ✅ Candidate Registration API
+app.use("/api/contacts", contactRoutes); //  Contact API
+app.use("/api/candidates", candidateRoutes); //  Candidate Registration API
+
+
+
+
 
 // Start Server
 app.listen(PORT, () => {

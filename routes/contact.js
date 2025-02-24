@@ -37,7 +37,8 @@ router.get('/', async (req, res) => {
         const contacts = await Contact.find();
         res.status(200).send(contacts);
     } catch (error) {
-        res.status(500).send({ message: "Error fetching contacts", error: error.message });
+        res.status(500).send(
+            { message: "Error fetching contacts", error: error.message });
     }
 });
 

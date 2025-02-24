@@ -9,7 +9,7 @@ const CandidateSchema = new mongoose.Schema({
   city: String,
   state: String,
   mobile: String,
-  alternateNumber: String,
+  alternateNumber:   String,
   email: String,
   upiTransactionId: String,
   uniqueId: String
