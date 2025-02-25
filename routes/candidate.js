@@ -7,9 +7,22 @@ router.post("/", async (req, res) => {
   try {
     console.log("Received Data:", req.body); // Debugging log
 
+    // Fetch the last candidate to determine the next unique ID
+    const lastCandidate = await Candidate.findOne().sort({ uniqueId: -1 });
+
+    let newUniqueId = "Yunify-10001"; // Default if no records exist
+
+    if (lastCandidate && lastCandidate.uniqueId) {
+      const lastIdNumber = parseInt(lastCandidate.uniqueId.split("-")[1], 10);
+      newUniqueId = `Yunify-${lastIdNumber + 1}`;
+    }
+
+    // Assign the generated uniqueId to the request body
+    req.body.uniqueId = newUniqueId;
+
     // Check required fields
     const requiredFields = [
-      "uniqueId", "name", "fatherName", "dob", "maritalStatus",
+      "name", "fatherName", "dob", "maritalStatus",
       "address", "city", "state", "pincode", "qualification", "stream",
       "passingYear", "experience", "jobTitle", "companyName", "email", "mobile"
     ];
@@ -23,12 +36,12 @@ router.post("/", async (req, res) => {
     // Create and save the new candidate
     const newCandidate = new Candidate(req.body);
     await newCandidate.save();
-    
-    res.status(201).json({ message: "Candidate registered successfully!" });
+
+    res.status(201).json({ message: "Candidate registered successfully!", uniqueId: newUniqueId });
   } catch (error) {
     console.error("Error saving candidate:", error);
 
-    // Handle duplicate key errors (email, mobile, uniqueId)
+    // Handle duplicate key errors (email, mobile)
     if (error.code === 11000) {
       return res.status(400).json({ error: "Email, Mobile, or Unique ID already exists" });
     }
