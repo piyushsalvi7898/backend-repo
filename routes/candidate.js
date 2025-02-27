@@ -9,7 +9,6 @@ router.post("/", async (req, res) => {
 
     // Fetch the last candidate to determine the next unique ID
     const lastCandidate = await Candidate.findOne().sort({ uniqueId: -1 });
-
     let newUniqueId = "Yunify-10001"; // Default if no records exist
 
     if (lastCandidate && lastCandidate.uniqueId) {
@@ -20,11 +19,11 @@ router.post("/", async (req, res) => {
     // Assign the generated uniqueId to the request body
     req.body.uniqueId = newUniqueId;
 
-    // Check required fields
+    // Debugging log to check the candidate data before saving
+    console.log("Candidate Data to Save:", req.body);
+
     const requiredFields = [
-      "name", "fatherName", "dob", "maritalStatus",
-      "address", "city", "state", "pincode", "qualification", "stream",
-      "passingYear", "experience", "jobTitle", "companyName", "email", "mobile"
+      "name", "dob", "address", "qualification", "experience", "email", "mobile", "reference"
     ];
 
     for (const field of requiredFields) {
@@ -50,28 +49,21 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get All Candidates (GET)
-router.get("/", async (req, res) => {
+// Get Unique ID (GET)
+router.get("/uniqueId", async (req, res) => {
   try {
-    const candidates = await Candidate.find();
-    res.status(200).json(candidates);
-  } catch (error) {
-    console.error("Error fetching candidates:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
+    const lastCandidate = await Candidate.findOne().sort({ uniqueId: -1 });
+    let newUniqueId = "Yunify-10001"; // Default if no records exist
 
-// Get Candidate by ID (GET)
-router.get("/:id", async (req, res) => {
-  try {
-    const candidate = await Candidate.findById(req.params.id);
-    if (!candidate) {
-      return res.status(404).json({ message: "Candidate not found" });
+    if (lastCandidate && lastCandidate.uniqueId) {
+      const lastIdNumber = parseInt(lastCandidate.uniqueId.split("-")[1], 10);
+      newUniqueId = `Yunify-${lastIdNumber + 1}`;
     }
-    res.status(200).json(candidate);
+
+    res.status(200).json({ uniqueId: newUniqueId });
   } catch (error) {
-    console.error("Error fetching candidate:", error);
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching unique ID:", error);
+    res.status(500).json({ error: "Failed to fetch unique ID" });
   }
 });
 

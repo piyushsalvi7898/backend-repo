@@ -15,21 +15,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.delete('/delete/:id', async (req, res) => {
-    try {
-        const _id = req.params.id;
-        await User.findByIdAndDelete(_id);
-        res.json({
-            message: 'User deleted successfully',
-            data: { id: _id }
-        });
-    } catch (error) {
-        console.error('Error deleting user:', error);
-        res.status(500).json({ message: 'Error deleting user' });
-    }
-});
-module.exports = router;
-
 
 // Get all contacts
 router.get('/', async (req, res) => {
@@ -41,5 +26,23 @@ router.get('/', async (req, res) => {
             { message: "Error fetching contacts", error: error.message });
     }
 });
+
+router.get("/uniqueId", async (req, res) => {
+    try {
+      const lastCandidate = await Candidate.findOne().sort({ uniqueId: -1 });
+      let newUniqueId = "Yunify-10001"; // Default if no records exist
+  
+      if (lastCandidate && lastCandidate.uniqueId) {
+        const lastIdNumber = parseInt(lastCandidate.uniqueId.split("-")[1], 10);
+        newUniqueId = `Yunify-${lastIdNumber + 1}`;
+      }
+  
+      console.log("Generated Unique ID:", newUniqueId); // Debugging log
+      res.status(200).json({ uniqueId: newUniqueId });
+    } catch (error) {
+      console.error("Error fetching unique ID:", error);
+      res.status(500).json({ error: "Failed to fetch unique ID" });
+    }
+  });
 
 module.exports = router;
