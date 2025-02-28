@@ -67,4 +67,15 @@ router.get("/uniqueId", async (req, res) => {
   }
 });
 
+router.get("/candidates", async (req, res) => {
+  try {
+    const candidates = await Candidate.find(); // Fetch all candidates
+    res.status(200).json(candidates);
+  } catch (error) {
+    console.error("Error fetching candidates:", error);
+    res.status(500).json({ error: "Failed to fetch candidates" });
+  }
+});
+
+
 module.exports = router;
